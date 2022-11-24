@@ -35,7 +35,7 @@ namespace TetrisClone.Core
             }
             else
             {
-                Debug.Log($"WARNING! Please assign the emptySprite object in the inspector");
+                Debug.Log($"WARNING! Please assign the emptySprite object in inspector");
             }
         }
     }
