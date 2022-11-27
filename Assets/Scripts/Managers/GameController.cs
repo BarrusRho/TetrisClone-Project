@@ -11,7 +11,7 @@ namespace TetrisClone.Managers
         private Spawner _spawner;
         private Shape _activeShape;
 
-        private float _dropInterval = 1f;
+        private float _dropInterval = 0.25f;
         private float _timeToDrop;
 
         private void Awake()
@@ -51,6 +51,17 @@ namespace TetrisClone.Managers
                 if (_activeShape)
                 {
                     _activeShape.MoveDown();
+
+                    if (!_gameBoard.IsValidPosition(_activeShape))
+                    {
+                        _activeShape.MoveUp();
+                        _gameBoard.StoreShapeInGrid(_activeShape);
+
+                        if (_spawner)
+                        {
+                            _activeShape = _spawner.SpawnShape();
+                        }
+                    }
                 }
             }
 

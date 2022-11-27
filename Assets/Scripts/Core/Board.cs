@@ -1,5 +1,10 @@
 using System;
+using System.Numerics;
+using TetrisClone.Utility;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace TetrisClone.Core
 {
@@ -36,6 +41,50 @@ namespace TetrisClone.Core
             else
             {
                 Debug.Log($"WARNING! Please assign the emptySprite object in inspector");
+            }
+        }
+
+        private bool IsWithinBoard(int x, int y)
+        {
+            return (x >= 0 && x < width && y >= 0);
+        }
+
+        public bool IsValidPosition(Shape shape)
+        {
+            foreach (Transform child in shape.transform)
+            {
+                Vector2 position = Vectorf.Round(child.position);
+
+                if (!IsWithinBoard((int) position.x, (int) position.y))
+                {
+                    return false;
+                }
+
+                if (IsOccupied((int) position.x, (int) position.y, shape))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsOccupied(int x, int y, Shape shape)
+        {
+            return (_grid[x, y] != null && _grid[x, y].parent != shape.transform);
+        }
+
+        public void StoreShapeInGrid(Shape shape)
+        {
+            if (shape == null)
+            {
+                return;
+            }
+
+            foreach (Transform child in shape.transform)
+            {
+                Vector2 position = Vectorf.Round(child.position);
+                _grid[(int)position.x, (int)position.y] = child;
             }
         }
     }
