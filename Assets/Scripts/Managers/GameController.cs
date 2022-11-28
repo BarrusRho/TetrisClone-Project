@@ -13,6 +13,10 @@ namespace TetrisClone.Managers
 
         private float _dropInterval = 0.25f;
         private float _timeToDrop;
+        private float _timeToNextKey;
+        
+        [SerializeField] [Range(0.02f, 1)]
+        private float _keyRepeatRate = 0.25f;
 
         private void Awake()
         {
@@ -27,6 +31,8 @@ namespace TetrisClone.Managers
 
         private void Start()
         {
+            _timeToNextKey = Time.time;
+            
             if (!_spawner) return;
             
             if (_activeShape == null)
@@ -39,6 +45,22 @@ namespace TetrisClone.Managers
 
         private void Update()
         {
+            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKey || Input.GetButtonDown("MoveRight"))
+            {
+                _activeShape.MoveRight();
+                _timeToNextKey = Time.time + _keyRepeatRate;
+
+                if (_gameBoard.IsValidPosition(_activeShape))
+                {
+                    Debug.Log($"Move right");
+                }
+                else
+                {
+                    _activeShape.MoveLeft();
+                    Debug.Log($"Hit the rightmost boundary");
+                }
+            }
+            
             if (!_gameBoard || !_spawner)
             {
                 return;
