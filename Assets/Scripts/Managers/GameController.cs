@@ -11,12 +11,20 @@ namespace TetrisClone.Managers
         private Spawner _spawner;
         private Shape _activeShape;
 
-        private float _dropInterval = 0.25f;
+        private float _dropInterval = 0.9f;
         private float _timeToDrop;
-        private float _timeToNextKey;
+        //private float _timeToNextKey;
+
+        //[SerializeField] [Range(0.02f, 1)] private float _keyRepeatRate = 0.25f;
         
-        [SerializeField] [Range(0.02f, 1)]
-        private float _keyRepeatRate = 0.25f;
+        private float _timeToNextKeyLeftRight;
+        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeatRateLeftRight = 0.15f;
+
+        private float _timeToNextKeyRotate;
+        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeateRateRotate = 0.25f;
+        
+        private float _timeToNextKeyDown;
+        [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
 
         private void Awake()
         {
@@ -31,10 +39,13 @@ namespace TetrisClone.Managers
 
         private void Start()
         {
-            _timeToNextKey = Time.time;
-            
+            //_timeToNextKey = Time.time;
+            _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
+            _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
+            _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
+
             if (!_spawner) return;
-            
+
             if (_activeShape == null)
             {
                 _activeShape = _spawner.SpawnShape();
@@ -45,48 +56,72 @@ namespace TetrisClone.Managers
 
         private void Update()
         {
-            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKey || Input.GetButtonDown("MoveRight"))
-            {
-                _activeShape.MoveRight();
-                _timeToNextKey = Time.time + _keyRepeatRate;
-
-                if (_gameBoard.IsValidPosition(_activeShape))
-                {
-                    Debug.Log($"Move right");
-                }
-                else
-                {
-                    _activeShape.MoveLeft();
-                    Debug.Log($"Hit the rightmost boundary");
-                }
-            }
-            
-            if (!_gameBoard || !_spawner)
+            if (!_gameBoard || !_spawner || !_activeShape)
             {
                 return;
             }
 
-            if (Time.time > _timeToDrop)
+            PlayerInput();
+        }
+
+        private void PlayerInput()
+        {
+            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKeyLeftRight || Input.GetButtonDown("MoveRight") ||
+                Input.GetKeyDown(KeyCode.RightArrow))
             {
-                _timeToDrop = Time.time + _dropInterval;
-                
-                if (_activeShape)
+                _activeShape.MoveRight();
+                _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
+
+                if (!_gameBoard.IsValidPosition(_activeShape))
                 {
-                    _activeShape.MoveDown();
-
-                    if (!_gameBoard.IsValidPosition(_activeShape))
-                    {
-                        _activeShape.MoveUp();
-                        _gameBoard.StoreShapeInGrid(_activeShape);
-
-                        if (_spawner)
-                        {
-                            _activeShape = _spawner.SpawnShape();
-                        }
-                    }
+                    _activeShape.MoveLeft();
                 }
             }
+            else if (Input.GetButton("MoveLeft") && Time.time > _timeToNextKeyLeftRight || Input.GetButtonDown("MoveLeft") ||
+                     Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                _activeShape.MoveLeft();
+                _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
 
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    _activeShape.MoveRight();
+                }
+            }
+            else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                _activeShape.RotateRight();
+                _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
+
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    _activeShape.RotateLeft();
+                }
+            }
+            else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
+            {
+                _timeToDrop = Time.time + _dropInterval;
+                _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
+
+                _activeShape.MoveDown();
+
+                if (!_gameBoard.IsValidPosition(_activeShape))
+                {
+                    LandShape();
+                }
+            }
+        }
+
+        private void LandShape()
+        {
+            //_timeToNextKey = Time.time;
+            _timeToNextKeyLeftRight = Time.time;
+            _timeToNextKeyRotate = Time.time;
+            _timeToNextKeyDown = Time.time;
+
+            _activeShape.MoveUp();
+            _gameBoard.StoreShapeInGrid(_activeShape);
+            _activeShape = _spawner.SpawnShape();
         }
     }
 }
