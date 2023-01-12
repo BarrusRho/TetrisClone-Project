@@ -16,11 +16,11 @@ namespace TetrisClone.Core
         public int header = 8;
 
         private Transform[,] _grid;
-        
+
         private void Start()
         {
             _grid = new Transform[width, height];
-            
+
             DrawEmptyCells();
         }
 
@@ -55,12 +55,12 @@ namespace TetrisClone.Core
             {
                 Vector2 position = Vectorf.Round(child.position);
 
-                if (!IsWithinBoard((int) position.x, (int) position.y))
+                if (!IsWithinBoard((int)position.x, (int)position.y))
                 {
                     return false;
                 }
 
-                if (IsOccupied((int) position.x, (int) position.y, shape))
+                if (IsOccupied((int)position.x, (int)position.y, shape))
                 {
                     return false;
                 }
@@ -85,6 +85,66 @@ namespace TetrisClone.Core
             {
                 Vector2 position = Vectorf.Round(child.position);
                 _grid[(int)position.x, (int)position.y] = child;
+            }
+        }
+
+        private bool IsComplete(int y)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (_grid[x, y] == null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void ClearRow(int y)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (_grid[x, y] != null)
+                {
+                    Destroy(_grid[x, y].gameObject);
+                }
+
+                _grid[x, y] = null;
+            }
+        }
+
+        private void ShiftOneRowDown(int y)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (_grid[x, y] != null)
+                {
+                    _grid[x, y - 1] = _grid[x, y];
+                    _grid[x, y] = null;
+                    _grid[x, y - 1].position += new Vector3(0, -1, 0);
+                }
+            }
+        }
+
+        private void ShiftRowsDown(int startY)
+        {
+            for (int i = startY; i < height; i++)
+            {
+                ShiftOneRowDown(i);
+            }
+        }
+
+        public void ClearAllRows()
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (IsComplete(y))
+                {
+                    ClearRow(y);
+                    ShiftRowsDown(y + 1);
+                    y--;
+                }
             }
         }
     }

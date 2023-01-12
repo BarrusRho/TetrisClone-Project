@@ -11,7 +11,7 @@ namespace TetrisClone.Managers
         private Spawner _spawner;
         private Shape _activeShape;
 
-        private float _dropInterval = 0.9f;
+        public float _dropInterval = 0.9f;
         private float _timeToDrop;
         //private float _timeToNextKey;
 
@@ -122,6 +122,8 @@ namespace TetrisClone.Managers
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
             _activeShape = _spawner.SpawnShape();
+            
+            _gameBoard.ClearAllRows();
         }
     }
 }
