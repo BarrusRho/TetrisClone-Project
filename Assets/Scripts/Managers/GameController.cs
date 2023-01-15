@@ -7,6 +7,8 @@ namespace TetrisClone.Managers
 {
     public class GameController : MonoBehaviour
     {
+        private AudioManager _audioManager;
+        
         private Board _gameBoard;
         private Spawner _spawner;
         private Shape _activeShape;
@@ -31,6 +33,8 @@ namespace TetrisClone.Managers
 
         private void Awake()
         {
+            _audioManager = FindObjectOfType<AudioManager>();
+            
             _gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
 
@@ -64,7 +68,7 @@ namespace TetrisClone.Managers
 
         private void Update()
         {
-            if (!_gameBoard || !_spawner || !_activeShape || _isGameOver)
+            if (!_gameBoard || !_spawner || !_activeShape || _isGameOver || !_audioManager)
             {
                 return;
             }
@@ -79,10 +83,15 @@ namespace TetrisClone.Managers
             {
                 _activeShape.MoveRight();
                 _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
-
+                
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
                     _activeShape.MoveLeft();
+                    PlaySound(_audioManager.errorSound, 0.5f);
+                }
+                else
+                {
+                    PlaySound(_audioManager.moveSound,1f );
                 }
             }
             else if (Input.GetButton("MoveLeft") && Time.time > _timeToNextKeyLeftRight || Input.GetButtonDown("MoveLeft") ||
@@ -94,6 +103,11 @@ namespace TetrisClone.Managers
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
                     _activeShape.MoveRight();
+                    PlaySound(_audioManager.errorSound, 0.5f);
+                }
+                else
+                {
+                    PlaySound(_audioManager.moveSound, 1f);
                 }
             }
             else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate || Input.GetKeyDown(KeyCode.UpArrow))
@@ -104,6 +118,11 @@ namespace TetrisClone.Managers
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
                     _activeShape.RotateLeft();
+                    PlaySound(_audioManager.errorSound, 0.5f);
+                }
+                else
+                {
+                    PlaySound(_audioManager.moveSound, 1f);
                 }
             }
             else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
@@ -126,31 +145,42 @@ namespace TetrisClone.Managers
                 }
             }
         }
-        
+
+
         private void LandShape()
         {
-            //_timeToNextKey = Time.time;
+            _activeShape.MoveUp();
+            _gameBoard.StoreShapeInGrid(_activeShape);
+            PlaySound(_audioManager.dropSound, 1f);
+            _activeShape = _spawner.SpawnShape();
+            
             _timeToNextKeyLeftRight = Time.time;
             _timeToNextKeyRotate = Time.time;
             _timeToNextKeyDown = Time.time;
-
-            _activeShape.MoveUp();
-            _gameBoard.StoreShapeInGrid(_activeShape);
-            _activeShape = _spawner.SpawnShape();
             
             _gameBoard.ClearAllRows();
+        }
+        
+        private void PlaySound(AudioClip audioClip, float volumeMultiplier)
+        {
+            if (_audioManager.isSFXEnabled && audioClip)
+            {
+                AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position, Mathf.Clamp(_audioManager.sFXVolume * volumeMultiplier,0.05f, 1f));
+            }
         }
         
         private void GameOver()
         {
             _activeShape.MoveUp();
-            _isGameOver = true;
-            Debug.LogWarning($"{_activeShape.name} is over the limit");
-
+            
             if (gameOverPanel)
             {
                 gameOverPanel.SetActive(true);
             }
+            
+            PlaySound(_audioManager.gameOverSound, 2f);
+            
+            _isGameOver = true;
         }
         
         public void Restart()
