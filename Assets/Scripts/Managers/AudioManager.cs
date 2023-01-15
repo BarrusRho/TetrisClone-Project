@@ -18,6 +18,7 @@ namespace TetrisClone.Managers
         public AudioClip moveSound;
         public AudioClip dropSound;
         public AudioClip gameOverSound;
+        public AudioClip errorSound;
 
         public AudioSource audioSource;
 
@@ -70,6 +71,11 @@ namespace TetrisClone.Managers
         {
             var randomAudioClip = audioClips[Random.Range(0, audioClips.Length)];
             return randomAudioClip;
+        }
+
+        public void ToggleSFX()
+        {
+            isSFXEnabled = !isSFXEnabled;
         }
     }
 }

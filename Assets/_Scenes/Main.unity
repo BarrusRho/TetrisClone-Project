@@ -2451,14 +2451,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9bfc940e10cd944bc702fc78bcb3b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMusicEnabled: 1
+  isMusicEnabled: 0
   isSFXEnabled: 1
   musicVolume: 0.2
-  sFXVolume: 1
-  clearRowSound: {fileID: 0}
-  moveSound: {fileID: 0}
-  dropSound: {fileID: 0}
-  gameOverSound: {fileID: 0}
+  sFXVolume: 0.6
+  clearRowSound: {fileID: 8300000, guid: c0ea32df5512c954c8aa91a28a75de1b, type: 3}
+  moveSound: {fileID: 8300000, guid: 36c2a330b329b184c85a3b3c9d24b81f, type: 3}
+  dropSound: {fileID: 8300000, guid: 513d8a134cab4584080f0a30901cc8ff, type: 3}
+  gameOverSound: {fileID: 8300000, guid: 0a52b0251b844814c8dc2fee4e794959, type: 3}
+  errorSound: {fileID: 8300000, guid: 1cac19c6250f0f2418f211e56fe082b3, type: 3}
   audioSource: {fileID: 618813872}
   _backgroundMusicAudioClips:
   - {fileID: 8300000, guid: a43045f045ff08a4dbea519fdb26ffd0, type: 3}
@@ -2666,6 +2667,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FX
       objectReference: {fileID: 0}
+    - target: {fileID: 8497839265240239387, guid: 69f9e2554fbe606408ed037f7ab35cbc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1902109087}
     - target: {fileID: 8740194749389924411, guid: 69f9e2554fbe606408ed037f7ab35cbc, type: 3}
       propertyPath: m_Pivot.x
       value: 0
