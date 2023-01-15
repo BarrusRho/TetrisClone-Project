@@ -147,5 +147,17 @@ namespace TetrisClone.Core
                 }
             }
         }
+
+        public bool IsOverLimit(Shape shape)
+        {
+            foreach (Transform child in shape.transform)
+            {
+                if (child.transform.position.y >= (height - header) - 1)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace TetrisClone.Managers
 
         public float _dropInterval = 0.9f;
         private float _timeToDrop;
+
+        private bool _isGameOver = false;
         //private float _timeToNextKey;
 
         //[SerializeField] [Range(0.02f, 1)] private float _keyRepeatRate = 0.25f;
@@ -56,7 +58,7 @@ namespace TetrisClone.Managers
 
         private void Update()
         {
-            if (!_gameBoard || !_spawner || !_activeShape)
+            if (!_gameBoard || !_spawner || !_activeShape || _isGameOver)
             {
                 return;
             }
@@ -107,7 +109,16 @@ namespace TetrisClone.Managers
 
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
-                    LandShape();
+                    if (_gameBoard.IsOverLimit(_activeShape))
+                    {
+                        _activeShape.MoveUp();
+                        _isGameOver = true;
+                        Debug.LogWarning($"{_activeShape.name} is over the limit");
+                    }
+                    else
+                    {
+                        LandShape();
+                    }
                 }
             }
         }
