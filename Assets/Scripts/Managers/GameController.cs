@@ -162,6 +162,11 @@ namespace TetrisClone.Managers
 
             if (_gameBoard.completedRows > 0)
             {
+                if (_gameBoard.completedRows > 1)
+                {
+                    var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
+                    PlaySound(randomVocalAudioClip, 1f);
+                }
                 PlaySound(_audioManager.clearRowSound, 1f);
             }
         }
@@ -177,13 +182,14 @@ namespace TetrisClone.Managers
         private void GameOver()
         {
             _activeShape.MoveUp();
-            
+
             if (gameOverPanel)
             {
                 gameOverPanel.SetActive(true);
             }
             
             PlaySound(_audioManager.gameOverSound, 2f);
+            PlaySound(_audioManager.gameOverVocal, 2f);
             
             _isGameOver = true;
         }

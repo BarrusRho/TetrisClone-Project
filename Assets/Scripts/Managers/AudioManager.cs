@@ -18,12 +18,15 @@ namespace TetrisClone.Managers
         public AudioClip moveSound;
         public AudioClip dropSound;
         public AudioClip gameOverSound;
+        public AudioClip gameOverVocal;
         public AudioClip errorSound;
 
         public AudioSource audioSource;
 
         [SerializeField] private AudioClip[] _backgroundMusicAudioClips;
         private AudioClip _randomBackgroundMusicAudioClip;
+
+        public AudioClip[] vocalAudioClips;
         
         private void Start()
         {
