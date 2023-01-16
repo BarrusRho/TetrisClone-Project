@@ -232,6 +232,7 @@ MonoBehaviour:
   height: 30
   width: 10
   header: 8
+  completedRows: 0
 --- !u!4 &361945060
 Transform:
   m_ObjectHideFlags: 0
@@ -246,6 +247,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &391718789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 391718791}
+  - component: {fileID: 391718790}
+  m_Layer: 0
+  m_Name: SpawnerTest
+  m_TagString: Spawner
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &391718790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391718789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ba50139d2c60b744b51863126003f72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allShapes:
+  - {fileID: 4696684760747206671, guid: 9cc972656005cbf4e8160371e9d799b1, type: 3}
+--- !u!4 &391718791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 391718789}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 25, z: -1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &413204451
 GameObject:
@@ -2459,12 +2506,18 @@ MonoBehaviour:
   moveSound: {fileID: 8300000, guid: 36c2a330b329b184c85a3b3c9d24b81f, type: 3}
   dropSound: {fileID: 8300000, guid: 513d8a134cab4584080f0a30901cc8ff, type: 3}
   gameOverSound: {fileID: 8300000, guid: 0a52b0251b844814c8dc2fee4e794959, type: 3}
+  gameOverVocal: {fileID: 8300000, guid: 6771f76e188236c4e8a4aafff210c788, type: 3}
   errorSound: {fileID: 8300000, guid: 1cac19c6250f0f2418f211e56fe082b3, type: 3}
   audioSource: {fileID: 618813872}
   _backgroundMusicAudioClips:
   - {fileID: 8300000, guid: a43045f045ff08a4dbea519fdb26ffd0, type: 3}
   - {fileID: 8300000, guid: 1faca68dfd903f14294d804f6ebda2fd, type: 3}
   - {fileID: 8300000, guid: eff2f1783febae947b5de2b184ed227d, type: 3}
+  vocalAudioClips:
+  - {fileID: 8300000, guid: 8cc5361692b93a745a69a9563009a845, type: 3}
+  - {fileID: 8300000, guid: 324752ac0b665ba42bf4ca091f66dcb4, type: 3}
+  - {fileID: 8300000, guid: af6057233f9896e44af5533433c68476, type: 3}
+  - {fileID: 8300000, guid: 6dd1d63df5a9a4d4c9ec71e02b90d262, type: 3}
 --- !u!4 &1902109088
 Transform:
   m_ObjectHideFlags: 0
