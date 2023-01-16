@@ -14,6 +14,7 @@ namespace TetrisClone.Core
         public int height = 30;
         public int width = 10;
         public int header = 8;
+        public int completedRows = 0;
 
         private Transform[,] _grid;
 
@@ -137,10 +138,13 @@ namespace TetrisClone.Core
 
         public void ClearAllRows()
         {
+            completedRows = 0;
+            
             for (int y = 0; y < height; y++)
             {
                 if (IsComplete(y))
                 {
+                    completedRows++;
                     ClearRow(y);
                     ShiftRowsDown(y + 1);
                     y--;

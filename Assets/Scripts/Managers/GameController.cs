@@ -159,6 +159,11 @@ namespace TetrisClone.Managers
             _timeToNextKeyDown = Time.time;
             
             _gameBoard.ClearAllRows();
+
+            if (_gameBoard.completedRows > 0)
+            {
+                PlaySound(_audioManager.clearRowSound, 1f);
+            }
         }
         
         private void PlaySound(AudioClip audioClip, float volumeMultiplier)
