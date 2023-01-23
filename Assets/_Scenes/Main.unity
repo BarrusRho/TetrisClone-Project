@@ -323,8 +323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7416005a5ed85744b81b8d12e81dc03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dropInterval: 0.9
+  dropInterval: 0.9
   gameOverPanel: {fileID: 751390686}
+  rotationIconToggle: {fileID: 1291306463}
   _keyRepeatRateLeftRight: 0.15
   _keyRepeateRateRotate: 0.25
   _keyRepeatRateDown: 0.05
@@ -1521,6 +1522,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1252392177}
   m_CullTransparentMesh: 1
+--- !u!1 &1279120926 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3308612531324372068, guid: 8bdb3f410020c804d9d44c0def6be001, type: 3}
+  m_PrefabInstance: {fileID: 2523504772277490157}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1283165943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,6 +1579,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1291306459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1845926968372006053, guid: 8bdb3f410020c804d9d44c0def6be001, type: 3}
+  m_PrefabInstance: {fileID: 2523504772277490157}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1291306461 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2125547751572125547, guid: 8bdb3f410020c804d9d44c0def6be001, type: 3}
+  m_PrefabInstance: {fileID: 2523504772277490157}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291306459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1291306463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291306459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc8584f761d18489eaa457eb56f525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconTrue: {fileID: 21300000, guid: 1b5c5d0ed3134ac438627141e92b869c, type: 3}
+  iconFalse: {fileID: 21300000, guid: 982b2ea2db557374385059beb2b84249, type: 3}
+  defaultIconState: 1
 --- !u!1 &1318972439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,7 +2535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f9bfc940e10cd944bc702fc78bcb3b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMusicEnabled: 0
+  isMusicEnabled: 1
   isSFXEnabled: 1
   musicVolume: 0.2
   sFXVolume: 0.6
@@ -2518,6 +2555,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 324752ac0b665ba42bf4ca091f66dcb4, type: 3}
   - {fileID: 8300000, guid: af6057233f9896e44af5533433c68476, type: 3}
   - {fileID: 8300000, guid: 6dd1d63df5a9a4d4c9ec71e02b90d262, type: 3}
+  musicIconToggle: {fileID: 6067944531964163292}
+  sfxIconToggle: {fileID: 911146701113009444}
 --- !u!4 &1902109088
 Transform:
   m_ObjectHideFlags: 0
@@ -2829,6 +2868,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconTrue: {fileID: 21300000, guid: eea6d36c164165240b1f1c8cf79fd42a, type: 3}
   iconFalse: {fileID: 21300000, guid: 922373f9d322c464fad611c68bbf5cf0, type: 3}
+  defaultIconState: 1
 --- !u!1001 &1585599351901729543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3240,6 +3280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconTrue: {fileID: 21300000, guid: ecb5b05ec0b6e8846b805120299a16ca, type: 3}
   iconFalse: {fileID: 21300000, guid: 0f2f164d042f78649b8b3a5b22b8f273, type: 3}
+  defaultIconState: 1
 --- !u!224 &8497839264548815128 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2439764275648263618, guid: ecce9aaa34dff5c41858dae93474e746, type: 3}
@@ -3250,6 +3291,62 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6263145825387211811, guid: 8bdb3f410020c804d9d44c0def6be001, type: 3}
   m_PrefabInstance: {fileID: 2523504772277490157}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8497839264891321808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279120926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1291306461}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 413204452}
+        m_TargetAssemblyTypeName: TetrisClone.Managers.GameController, Assembly-CSharp
+        m_MethodName: ToggleRotationDirection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &8497839265240239385 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8740194749389924411, guid: 69f9e2554fbe606408ed037f7ab35cbc, type: 3}

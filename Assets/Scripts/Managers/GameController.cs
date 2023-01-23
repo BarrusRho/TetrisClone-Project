@@ -18,6 +18,10 @@ namespace TetrisClone.Managers
         private bool _isGameOver = false;
 
         public GameObject gameOverPanel;
+
+        public IconToggle rotationIconToggle;
+
+        private bool _clockwiseRotation = true;
         //private float _timeToNextKey;
 
         //[SerializeField] [Range(0.02f, 1)] private float _keyRepeatRate = 0.25f;
@@ -112,12 +116,13 @@ namespace TetrisClone.Managers
             }
             else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate || Input.GetKeyDown(KeyCode.UpArrow))
             {
-                _activeShape.RotateRight();
+                //_activeShape.RotateRight();
+                _activeShape.RotateClockwise(_clockwiseRotation);
                 _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
 
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
-                    _activeShape.RotateLeft();
+                    _activeShape.RotateClockwise(!_clockwiseRotation);
                     PlaySound(_audioManager.errorSound, 0.5f);
                 }
                 else
@@ -143,6 +148,10 @@ namespace TetrisClone.Managers
                         LandShape();
                     }
                 }
+            }
+            else if (Input.GetButtonDown("ToggleRotation"))
+            {
+                ToggleRotationDirection();
             }
         }
 
@@ -198,6 +207,15 @@ namespace TetrisClone.Managers
         {
             Debug.Log($"Level restarted");
             Application.LoadLevel(Application.loadedLevel);
+        }
+
+        public void ToggleRotationDirection()
+        {
+            _clockwiseRotation = !_clockwiseRotation;
+            if (rotationIconToggle)
+            {
+                rotationIconToggle.ToggleIcon(_clockwiseRotation);
+            }
         }
     }
 }
