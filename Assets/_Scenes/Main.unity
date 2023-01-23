@@ -2810,6 +2810,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69f9e2554fbe606408ed037f7ab35cbc, type: 3}
+--- !u!1 &911146701113009443 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3908647206178162877, guid: 69f9e2554fbe606408ed037f7ab35cbc, type: 3}
+  m_PrefabInstance: {fileID: 911146701113009442}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &911146701113009444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 911146701113009443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc8584f761d18489eaa457eb56f525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconTrue: {fileID: 21300000, guid: eea6d36c164165240b1f1c8cf79fd42a, type: 3}
+  iconFalse: {fileID: 21300000, guid: 922373f9d322c464fad611c68bbf5cf0, type: 3}
 --- !u!1001 &1585599351901729543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3202,6 +3221,25 @@ PrefabInstance:
       objectReference: {fileID: 1902109087}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecce9aaa34dff5c41858dae93474e746, type: 3}
+--- !u!1 &6067944531964163291 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7975573207149155652, guid: ecce9aaa34dff5c41858dae93474e746, type: 3}
+  m_PrefabInstance: {fileID: 6067944531964163290}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6067944531964163292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6067944531964163291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cabc8584f761d18489eaa457eb56f525, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconTrue: {fileID: 21300000, guid: ecb5b05ec0b6e8846b805120299a16ca, type: 3}
+  iconFalse: {fileID: 21300000, guid: 0f2f164d042f78649b8b3a5b22b8f273, type: 3}
 --- !u!224 &8497839264548815128 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2439764275648263618, guid: ecce9aaa34dff5c41858dae93474e746, type: 3}

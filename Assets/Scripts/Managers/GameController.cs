@@ -13,7 +13,7 @@ namespace TetrisClone.Managers
         private Spawner _spawner;
         private Shape _activeShape;
 
-        public float _dropInterval = 0.9f;
+        public float dropInterval = 0.9f;
         private float _timeToDrop;
         private bool _isGameOver = false;
 
@@ -127,7 +127,7 @@ namespace TetrisClone.Managers
             }
             else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
             {
-                _timeToDrop = Time.time + _dropInterval;
+                _timeToDrop = Time.time + dropInterval;
                 _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
 
                 _activeShape.MoveDown();

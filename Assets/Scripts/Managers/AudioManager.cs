@@ -1,4 +1,5 @@
 using System;
+using TetrisClone.Utility;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -27,6 +28,9 @@ namespace TetrisClone.Managers
         private AudioClip _randomBackgroundMusicAudioClip;
 
         public AudioClip[] vocalAudioClips;
+
+        public IconToggle musicIconToggle;
+        public IconToggle sfxIconToggle;
         
         private void Start()
         {
@@ -68,6 +72,11 @@ namespace TetrisClone.Managers
         {
             isMusicEnabled = !isMusicEnabled;
             UpdateMusic();
+
+            if (musicIconToggle)
+            {
+                musicIconToggle.ToggleIcon(isMusicEnabled);
+            }
         }
 
         public AudioClip GetRandomAudioClip(AudioClip[] audioClips)
@@ -79,6 +88,11 @@ namespace TetrisClone.Managers
         public void ToggleSFX()
         {
             isSFXEnabled = !isSFXEnabled;
+
+            if (sfxIconToggle)
+            {
+                sfxIconToggle.ToggleIcon(isSFXEnabled);
+            }
         }
     }
 }
