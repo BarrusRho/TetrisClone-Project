@@ -8,37 +8,32 @@ namespace TetrisClone.Managers
     public class GameController : MonoBehaviour
     {
         private AudioManager _audioManager;
-        
+
         private Board _gameBoard;
         private Spawner _spawner;
         private Shape _activeShape;
+        private bool _clockwiseRotation = true;
+
+        private float _timeToNextKeyLeftRight;
+        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeatRateLeftRight = 0.15f;
+        private float _timeToNextKeyRotate;
+        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeateRateRotate = 0.25f;
+        private float _timeToNextKeyDown;
+        [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
 
         public float dropInterval = 0.9f;
         private float _timeToDrop;
         private bool _isGameOver = false;
-
+        public bool isPaused = false;
         public GameObject gameOverPanel;
-
         public IconToggle rotationIconToggle;
+        public GameObject pauseMenuPanel;
 
-        private bool _clockwiseRotation = true;
-        //private float _timeToNextKey;
-
-        //[SerializeField] [Range(0.02f, 1)] private float _keyRepeatRate = 0.25f;
-        
-        private float _timeToNextKeyLeftRight;
-        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeatRateLeftRight = 0.15f;
-
-        private float _timeToNextKeyRotate;
-        [SerializeField] [Range(0.02f, 1f)] private float _keyRepeateRateRotate = 0.25f;
-        
-        private float _timeToNextKeyDown;
-        [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
 
         private void Awake()
         {
             _audioManager = FindObjectOfType<AudioManager>();
-            
+
             _gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
 
@@ -50,7 +45,6 @@ namespace TetrisClone.Managers
 
         private void Start()
         {
-            //_timeToNextKey = Time.time;
             _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
             _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
             _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
@@ -68,6 +62,10 @@ namespace TetrisClone.Managers
             {
                 gameOverPanel.SetActive(false);
             }
+            if (pauseMenuPanel)
+            {
+                pauseMenuPanel.SetActive(false);
+            }
         }
 
         private void Update()
@@ -82,12 +80,13 @@ namespace TetrisClone.Managers
 
         private void PlayerInput()
         {
-            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKeyLeftRight || Input.GetButtonDown("MoveRight") ||
+            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKeyLeftRight ||
+                Input.GetButtonDown("MoveRight") ||
                 Input.GetKeyDown(KeyCode.RightArrow))
             {
                 _activeShape.MoveRight();
                 _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
-                
+
                 if (!_gameBoard.IsValidPosition(_activeShape))
                 {
                     _activeShape.MoveLeft();
@@ -95,10 +94,11 @@ namespace TetrisClone.Managers
                 }
                 else
                 {
-                    PlaySound(_audioManager.moveSound,1f );
+                    PlaySound(_audioManager.moveSound, 1f);
                 }
             }
-            else if (Input.GetButton("MoveLeft") && Time.time > _timeToNextKeyLeftRight || Input.GetButtonDown("MoveLeft") ||
+            else if (Input.GetButton("MoveLeft") && Time.time > _timeToNextKeyLeftRight ||
+                     Input.GetButtonDown("MoveLeft") ||
                      Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 _activeShape.MoveLeft();
@@ -114,7 +114,8 @@ namespace TetrisClone.Managers
                     PlaySound(_audioManager.moveSound, 1f);
                 }
             }
-            else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate || Input.GetKeyDown(KeyCode.UpArrow))
+            else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate ||
+                     Input.GetKeyDown(KeyCode.UpArrow))
             {
                 //_activeShape.RotateRight();
                 _activeShape.RotateClockwise(_clockwiseRotation);
@@ -153,6 +154,10 @@ namespace TetrisClone.Managers
             {
                 ToggleRotationDirection();
             }
+            else if (Input.GetButtonDown("Pause"))
+            {
+                TogglePause();
+            }
         }
 
 
@@ -162,11 +167,11 @@ namespace TetrisClone.Managers
             _gameBoard.StoreShapeInGrid(_activeShape);
             PlaySound(_audioManager.dropSound, 1f);
             _activeShape = _spawner.SpawnShape();
-            
+
             _timeToNextKeyLeftRight = Time.time;
             _timeToNextKeyRotate = Time.time;
             _timeToNextKeyDown = Time.time;
-            
+
             _gameBoard.ClearAllRows();
 
             if (_gameBoard.completedRows > 0)
@@ -176,18 +181,20 @@ namespace TetrisClone.Managers
                     var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
                     PlaySound(randomVocalAudioClip, 1f);
                 }
+
                 PlaySound(_audioManager.clearRowSound, 1f);
             }
         }
-        
+
         private void PlaySound(AudioClip audioClip, float volumeMultiplier)
         {
             if (_audioManager.isSFXEnabled && audioClip)
             {
-                AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position, Mathf.Clamp(_audioManager.sFXVolume * volumeMultiplier,0.05f, 1f));
+                AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position,
+                    Mathf.Clamp(_audioManager.sFXVolume * volumeMultiplier, 0.05f, 1f));
             }
         }
-        
+
         private void GameOver()
         {
             _activeShape.MoveUp();
@@ -196,16 +203,17 @@ namespace TetrisClone.Managers
             {
                 gameOverPanel.SetActive(true);
             }
-            
+
             PlaySound(_audioManager.gameOverSound, 2f);
             PlaySound(_audioManager.gameOverVocal, 2f);
-            
+
             _isGameOver = true;
         }
-        
+
         public void Restart()
         {
             Debug.Log($"Level restarted");
+            Time.timeScale = 1f;
             Application.LoadLevel(Application.loadedLevel);
         }
 
@@ -215,6 +223,29 @@ namespace TetrisClone.Managers
             if (rotationIconToggle)
             {
                 rotationIconToggle.ToggleIcon(_clockwiseRotation);
+            }
+        }
+
+        public void TogglePause()
+        {
+            if (_isGameOver)
+            {
+                return;
+            }
+
+            isPaused = !isPaused;
+
+            if (pauseMenuPanel)
+            {
+                pauseMenuPanel.SetActive(isPaused);
+
+                if (_audioManager)
+                {
+                    _audioManager.audioSource.volume =
+                        (isPaused) ? _audioManager.musicVolume * 0.25f : _audioManager.musicVolume;
+                }
+
+                Time.timeScale = (isPaused) ? 0 : 1;
             }
         }
     }
