@@ -1,6 +1,6 @@
-using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TetrisClone.Management
 {
@@ -14,6 +14,10 @@ namespace TetrisClone.Management
         private const int _maxLines = 4;
 
         public int linesPerLevel;
+        
+        public TMP_Text linesText;
+        public TMP_Text levelText;
+        public TMP_Text scoreText;
 
         private void Start()
         {
@@ -39,12 +43,44 @@ namespace TetrisClone.Management
                     _score += 1200 * _level;
                     break;
             }
+            
+            UpdateUIText();
         }
 
         public void ResetLevel()
         {
             _level = 1;
             _lines = linesPerLevel * _level;
+        }
+
+        private void UpdateUIText()
+        {
+            if (linesText)
+            {
+                linesText.text = $"{_lines}";
+            }
+
+            if (levelText)
+            {
+                levelText.text = $"{_level}";
+            }
+
+            if (scoreText)
+            {
+                scoreText.text = ScorePadding(_score, 4);
+            }
+        }
+
+        private string ScorePadding(int number, int padDigits)
+        {
+            var paddedNumber = number.ToString();
+
+            while (paddedNumber.Length < padDigits)
+            {
+                paddedNumber = $"0{paddedNumber}";
+            }
+
+            return paddedNumber;
         }
     }
 }

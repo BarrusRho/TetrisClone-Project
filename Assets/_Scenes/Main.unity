@@ -1059,6 +1059,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a1c28702d89d6408b7d358c963c76a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linesPerLevel: 5
+  linesText: {fileID: 1409877361}
+  levelText: {fileID: 1993502803}
+  scoreText: {fileID: 865300145}
 --- !u!1 &673605772
 GameObject:
   m_ObjectHideFlags: 0
@@ -2965,6 +2969,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1376764862}
   m_CullTransparentMesh: 1
+--- !u!114 &1409877361 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6063936556494158604, guid: cbaa4ad258930a84dbf4b35efd32073a, type: 3}
+  m_PrefabInstance: {fileID: 1585599351901729543}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1507158871
 GameObject:
   m_ObjectHideFlags: 0
@@ -3623,7 +3638,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1768095811
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3804,7 +3819,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1795125678
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4281,6 +4296,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1993502803 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7524896009557146595, guid: 8bc020ae55dd8564cbe44f58914c8bce, type: 3}
+  m_PrefabInstance: {fileID: 3047684687066639085}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2036615363
 GameObject:
   m_ObjectHideFlags: 0
