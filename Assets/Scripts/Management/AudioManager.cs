@@ -3,7 +3,7 @@ using TetrisClone.Utility;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace TetrisClone.Managers
+namespace TetrisClone.Management
 {
     public class AudioManager : MonoBehaviour
     {

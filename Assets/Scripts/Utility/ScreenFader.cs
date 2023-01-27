@@ -9,15 +9,15 @@ namespace TetrisClone.Utility
     [RequireComponent(typeof(MaskableGraphic))]
     public class ScreenFader : MonoBehaviour
     {
-        public float startAlpha = 1f;
-        public float targetAlpha = 0;
-        public float startDelay = 0f;
-        public float timeToFade = 1f;
-
         private float _increment;
         private float _currentAlpha;
         private MaskableGraphic _graphic;
         private Color _originalColour;
+        
+        public float startAlpha = 1f;
+        public float targetAlpha = 0;
+        public float startDelay = 0f;
+        public float timeToFade = 1f;
 
         private void Awake()
         {

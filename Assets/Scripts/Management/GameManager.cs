@@ -3,9 +3,9 @@ using UnityEngine;
 using TetrisClone.Core;
 using TetrisClone.Utility;
 
-namespace TetrisClone.Managers
+namespace TetrisClone.Management
 {
-    public class GameController : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
         private AudioManager _audioManager;
 
