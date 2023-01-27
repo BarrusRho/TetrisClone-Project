@@ -8,6 +8,7 @@ namespace TetrisClone.Management
     public class GameManager : MonoBehaviour
     {
         private AudioManager _audioManager;
+        private ScoreManager _scoreManager;
 
         private Board _gameBoard;
         private Spawner _spawner;
@@ -33,11 +34,12 @@ namespace TetrisClone.Management
         private void Awake()
         {
             _audioManager = FindObjectOfType<AudioManager>();
+            _scoreManager = FindObjectOfType<ScoreManager>();
 
             _gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
 
-            if (!_gameBoard || !_spawner)
+            if (!_gameBoard || !_spawner || !_audioManager || !_scoreManager)
             {
                 Debug.Log($"WARNING. There is a missing assignment");
             }
@@ -70,7 +72,7 @@ namespace TetrisClone.Management
 
         private void Update()
         {
-            if (!_gameBoard || !_spawner || !_activeShape || _isGameOver || !_audioManager)
+            if (!_gameBoard || !_spawner || !_activeShape || _isGameOver || !_audioManager || !_scoreManager)
             {
                 return;
             }
@@ -176,6 +178,8 @@ namespace TetrisClone.Management
 
             if (_gameBoard.completedRows > 0)
             {
+                _scoreManager.ScoreLines(_gameBoard.completedRows);
+                
                 if (_gameBoard.completedRows > 1)
                 {
                     var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
