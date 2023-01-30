@@ -540,7 +540,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &391718790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1059,7 +1059,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95a1c28702d89d6408b7d358c963c76a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 1
   linesPerLevel: 5
+  hasLeveledUp: 0
   linesText: {fileID: 1409877361}
   levelText: {fileID: 1993502803}
   scoreText: {fileID: 865300145}
@@ -2510,7 +2512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1283165944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4128,9 +4130,10 @@ MonoBehaviour:
   clearRowSound: {fileID: 8300000, guid: c0ea32df5512c954c8aa91a28a75de1b, type: 3}
   moveSound: {fileID: 8300000, guid: 36c2a330b329b184c85a3b3c9d24b81f, type: 3}
   dropSound: {fileID: 8300000, guid: 513d8a134cab4584080f0a30901cc8ff, type: 3}
+  errorSound: {fileID: 8300000, guid: 1cac19c6250f0f2418f211e56fe082b3, type: 3}
   gameOverSound: {fileID: 8300000, guid: 0a52b0251b844814c8dc2fee4e794959, type: 3}
   gameOverVocal: {fileID: 8300000, guid: 6771f76e188236c4e8a4aafff210c788, type: 3}
-  errorSound: {fileID: 8300000, guid: 1cac19c6250f0f2418f211e56fe082b3, type: 3}
+  levelUpVocalClip: {fileID: 8300000, guid: 1225b1b98e2697d459c7dddd95179f7c, type: 3}
   audioSource: {fileID: 618813872}
   _backgroundMusicAudioClips:
   - {fileID: 8300000, guid: a43045f045ff08a4dbea519fdb26ffd0, type: 3}

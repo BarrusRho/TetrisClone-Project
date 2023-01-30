@@ -23,6 +23,7 @@ namespace TetrisClone.Management
         [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
 
         public float dropInterval = 0.9f;
+        private float _dropIntervalModded;
         private float _timeToDrop;
         private bool _isGameOver = false;
         public bool isPaused = false;
@@ -68,6 +69,8 @@ namespace TetrisClone.Management
             {
                 pauseMenuPanel.SetActive(false);
             }
+
+            _dropIntervalModded = dropInterval;
         }
 
         private void Update()
@@ -82,7 +85,7 @@ namespace TetrisClone.Management
 
         private void PlayerInput()
         {
-            if (Input.GetButton("MoveRight") && Time.time > _timeToNextKeyLeftRight ||
+            if ((Input.GetButton("MoveRight") && (Time.time > _timeToNextKeyLeftRight)) ||
                 Input.GetButtonDown("MoveRight") ||
                 Input.GetKeyDown(KeyCode.RightArrow))
             {
@@ -99,7 +102,7 @@ namespace TetrisClone.Management
                     PlaySound(_audioManager.moveSound, 1f);
                 }
             }
-            else if (Input.GetButton("MoveLeft") && Time.time > _timeToNextKeyLeftRight ||
+            else if ((Input.GetButton("MoveLeft") && (Time.time > _timeToNextKeyLeftRight)) ||
                      Input.GetButtonDown("MoveLeft") ||
                      Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -133,9 +136,9 @@ namespace TetrisClone.Management
                     PlaySound(_audioManager.moveSound, 1f);
                 }
             }
-            else if (Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown) || (Time.time > _timeToDrop))
+            else if ((Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown)) || (Time.time > _timeToDrop))
             {
-                _timeToDrop = Time.time + dropInterval;
+                _timeToDrop = Time.time + _dropIntervalModded;
                 _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
 
                 _activeShape.MoveDown();
@@ -179,11 +182,19 @@ namespace TetrisClone.Management
             if (_gameBoard.completedRows > 0)
             {
                 _scoreManager.ScoreLines(_gameBoard.completedRows);
-                
-                if (_gameBoard.completedRows > 1)
+
+                if (_scoreManager.hasLeveledUp)
                 {
-                    var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
-                    PlaySound(randomVocalAudioClip, 1f);
+                    PlaySound(_audioManager.levelUpVocalClip, 1f);
+                    _dropIntervalModded = Mathf.Clamp(dropInterval - (((float)_scoreManager.level -1) * 0.1f), 0.05f, 1f);
+                }
+                else
+                {
+                    if (_gameBoard.completedRows > 1)
+                    {
+                        var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
+                        PlaySound(randomVocalAudioClip, 1f);
+                    }
                 }
 
                 PlaySound(_audioManager.clearRowSound, 1f);

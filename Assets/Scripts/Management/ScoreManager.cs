@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace TetrisClone.Management
@@ -8,12 +9,13 @@ namespace TetrisClone.Management
     {
         private int _score = 0;
         private int _lines;
-        private int _level = 1;
+        [FormerlySerializedAs("_level")] public int level = 1;
 
         private const int _minLines = 1;
         private const int _maxLines = 4;
 
         public int linesPerLevel;
+        public bool hasLeveledUp = false;
         
         public TMP_Text linesText;
         public TMP_Text levelText;
@@ -26,22 +28,31 @@ namespace TetrisClone.Management
 
         public void ScoreLines(int numberOfLines)
         {
+            hasLeveledUp = false;
+            
             numberOfLines = Mathf.Clamp(numberOfLines, _minLines, _maxLines);
 
             switch (numberOfLines)
             {
                 case 1:
-                    _score += 40 * _level;
+                    _score += 40 * level;
                     break;
                 case 2:
-                    _score += 100 * _level;
+                    _score += 100 * level;
                     break;
                 case 3:
-                    _score += 300 * _level;
+                    _score += 300 * level;
                     break;
                 case 4:
-                    _score += 1200 * _level;
+                    _score += 1200 * level;
                     break;
+            }
+
+            _lines -= numberOfLines;
+
+            if (_lines <= 0)
+            {
+                LevelUp();
             }
             
             UpdateUIText();
@@ -49,8 +60,9 @@ namespace TetrisClone.Management
 
         public void ResetLevel()
         {
-            _level = 1;
-            _lines = linesPerLevel * _level;
+            level = 1;
+            _lines = linesPerLevel * level;
+            UpdateUIText();
         }
 
         private void UpdateUIText()
@@ -62,7 +74,7 @@ namespace TetrisClone.Management
 
             if (levelText)
             {
-                levelText.text = $"{_level}";
+                levelText.text = $"{level}";
             }
 
             if (scoreText)
@@ -81,6 +93,13 @@ namespace TetrisClone.Management
             }
 
             return paddedNumber;
+        }
+
+        public void LevelUp()
+        {
+            level++;
+            _lines = linesPerLevel * level;
+            hasLeveledUp = true;
         }
     }
 }
