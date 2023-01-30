@@ -9,6 +9,7 @@ namespace TetrisClone.Management
     {
         private AudioManager _audioManager;
         private ScoreManager _scoreManager;
+        private GhostShapeManager _ghostShapeManager;
 
         private Board _gameBoard;
         private Spawner _spawner;
@@ -36,6 +37,7 @@ namespace TetrisClone.Management
         {
             _audioManager = FindObjectOfType<AudioManager>();
             _scoreManager = FindObjectOfType<ScoreManager>();
+            _ghostShapeManager = FindObjectOfType<GhostShapeManager>();
 
             _gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
@@ -81,6 +83,14 @@ namespace TetrisClone.Management
             }
 
             PlayerInput();
+        }
+
+        private void LateUpdate()
+        {
+            if (_ghostShapeManager)
+            {
+                _ghostShapeManager.DrawGhostShape(_activeShape, _gameBoard);
+            }
         }
 
         private void PlayerInput()
@@ -171,6 +181,12 @@ namespace TetrisClone.Management
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
             PlaySound(_audioManager.dropSound, 1f);
+
+            if (_ghostShapeManager)
+            {
+                _ghostShapeManager.ResetGhostShape();
+            }
+            
             _activeShape = _spawner.SpawnShape();
 
             _timeToNextKeyLeftRight = Time.time;
