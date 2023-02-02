@@ -6,6 +6,7 @@ namespace TetrisClone.Core
     public class Shape : MonoBehaviour
     {
         public bool canRotate = true;
+        public Vector3 queueOffset;
 
         private void Move(Vector3 moveDirection)
         {

@@ -384,3 +384,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8763ccef9063248ae84ad2ea35fa41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canRotate: 1
+  queueOffset: {x: -0.25, y: 0, z: 0}
