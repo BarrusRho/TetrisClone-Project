@@ -10,6 +10,7 @@ namespace TetrisClone.Management
         private AudioManager _audioManager;
         private ScoreManager _scoreManager;
         private GhostShapeManager _ghostShapeManager;
+        private ShapeHolder _shapeHolder;
 
         private Board _gameBoard;
         private Spawner _spawner;
@@ -38,6 +39,7 @@ namespace TetrisClone.Management
             _audioManager = FindObjectOfType<AudioManager>();
             _scoreManager = FindObjectOfType<ScoreManager>();
             _ghostShapeManager = FindObjectOfType<GhostShapeManager>();
+            _shapeHolder = FindObjectOfType<ShapeHolder>();
 
             _gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
@@ -173,6 +175,10 @@ namespace TetrisClone.Management
             {
                 TogglePause();
             }
+            else if (Input.GetButtonDown("Hold"))
+            {
+                HoldShape();
+            }
         }
 
 
@@ -185,6 +191,11 @@ namespace TetrisClone.Management
             if (_ghostShapeManager)
             {
                 _ghostShapeManager.ResetGhostShape();
+            }
+
+            if (_shapeHolder)
+            {
+                _shapeHolder.canReleaseShape = true;
             }
             
             _activeShape = _spawner.SpawnShape();
@@ -277,6 +288,39 @@ namespace TetrisClone.Management
                 }
 
                 Time.timeScale = (isPaused) ? 0 : 1;
+            }
+        }
+
+        public void HoldShape()
+        {
+            if (!_shapeHolder)
+            {
+                return;
+            }
+
+            if (!_shapeHolder.holdShape)
+            {
+                _shapeHolder.CatchActiveShape(_activeShape);
+                _activeShape = _spawner.SpawnShape();
+                PlaySound(_audioManager.holdSound, 1f);
+            }
+            else if (_shapeHolder.canReleaseShape)
+            {
+                var temporaryShape = _activeShape;
+                _activeShape = _shapeHolder.ReleaseShape();
+                _activeShape.transform.position = _spawner.transform.position;
+                _shapeHolder.CatchActiveShape(temporaryShape);
+                PlaySound(_audioManager.holdSound, 1f);
+            }
+            else
+            {
+                Debug.LogWarning("ShapeHolder Warning: Wait for cooldown");
+                PlaySound(_audioManager.errorSound, 1f);
+            }
+
+            if (_ghostShapeManager)
+            {
+                _ghostShapeManager.ResetGhostShape();
             }
         }
     }

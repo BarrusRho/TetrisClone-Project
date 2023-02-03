@@ -19,6 +19,7 @@ namespace TetrisClone.Management
         public AudioClip moveSound;
         public AudioClip dropSound;
         public AudioClip errorSound;
+        public AudioClip holdSound;
         public AudioClip gameOverSound;
         public AudioClip gameOverVocal;
         public AudioClip levelUpVocalClip;
