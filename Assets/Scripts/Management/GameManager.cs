@@ -204,7 +204,7 @@ namespace TetrisClone.Management
             _timeToNextKeyRotate = Time.time;
             _timeToNextKeyDown = Time.time;
 
-            _gameBoard.ClearAllRows();
+            _gameBoard.StartCoroutine(nameof(_gameBoard.ClearAllRows));
 
             if (_gameBoard.completedRows > 0)
             {

@@ -1,5 +1,4 @@
-using System;
-using System.Numerics;
+using System.Collections;
 using TetrisClone.Utility;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
@@ -15,6 +14,7 @@ namespace TetrisClone.Core
         public int width = 10;
         public int header = 8;
         public int completedRows = 0;
+        public ParticleUtility[] glowingRowFX = new ParticleUtility[4];
 
         private Transform[,] _grid;
 
@@ -136,17 +136,28 @@ namespace TetrisClone.Core
             }
         }
 
-        public void ClearAllRows()
+        public IEnumerator ClearAllRows()
         {
             completedRows = 0;
+
+            for (int y = 0; y < height; y++)
+            {
+                if (IsComplete(y))
+                {
+                    ClearRowFX(completedRows,y);
+                    completedRows++;
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
             
             for (int y = 0; y < height; y++)
             {
                 if (IsComplete(y))
                 {
-                    completedRows++;
                     ClearRow(y);
                     ShiftRowsDown(y + 1);
+                    yield return new WaitForSeconds(0.3f);
                     y--;
                 }
             }
@@ -162,6 +173,15 @@ namespace TetrisClone.Core
                 }
             }
             return false;
+        }
+
+        private void ClearRowFX(int arrayIndex ,int yPosition)
+        {
+            if (glowingRowFX[arrayIndex])
+            {
+                glowingRowFX[arrayIndex].transform.position = new Vector3(0, yPosition, -2f);
+                glowingRowFX[arrayIndex].PlayParticles();
+            }
         }
     }
 }
