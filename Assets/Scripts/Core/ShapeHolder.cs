@@ -29,6 +29,7 @@ namespace TetrisClone.Core
                 activeShape.transform.position = holderTransform.position + activeShape.queueOffset;
                 activeShape.transform.localScale = new Vector3(_shapeScale, _shapeScale, _shapeScale);
                 holdShape = activeShape;
+                activeShape.transform.rotation = Quaternion.identity;
             }
             else
             {
