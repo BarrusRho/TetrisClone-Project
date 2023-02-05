@@ -28,6 +28,7 @@ namespace TetrisClone.Management
             {
                 _ghostShape.transform.position = originalShape.transform.position;
                 _ghostShape.transform.rotation = originalShape.transform.rotation;
+                _ghostShape.transform.localScale = Vector3.one;
             }
 
             _hasHitBottom = false;

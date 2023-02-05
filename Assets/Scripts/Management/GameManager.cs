@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using TetrisClone.Core;
 using TetrisClone.Utility;
@@ -33,7 +34,8 @@ namespace TetrisClone.Management
         public IconToggle rotationIconToggle;
         public GameObject pauseMenuPanel;
 
-
+        public ParticleUtility gameOverFX;
+        
         private void Awake()
         {
             _audioManager = FindObjectOfType<AudioManager>();
@@ -249,10 +251,7 @@ namespace TetrisClone.Management
         {
             _activeShape.MoveUp();
 
-            if (gameOverPanel)
-            {
-                gameOverPanel.SetActive(true);
-            }
+            StartCoroutine(GameOverRoutine());
 
             PlaySound(_audioManager.gameOverSound, 2f);
             PlaySound(_audioManager.gameOverVocal, 2f);
@@ -329,6 +328,21 @@ namespace TetrisClone.Management
             if (_ghostShapeManager)
             {
                 _ghostShapeManager.ResetGhostShape();
+            }
+        }
+
+        private IEnumerator GameOverRoutine()
+        {
+            if (gameOverFX)
+            {
+                gameOverFX.PlayParticles();
+            }
+
+            yield return new WaitForSeconds(0.3f);
+            
+            if (gameOverPanel)
+            {
+                gameOverPanel.SetActive(true);
             }
         }
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using TetrisClone.Utility;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,6 +13,7 @@ namespace TetrisClone.Core
         
         public Shape[] allShapes;
         public Transform[] queuedTransforms = new Transform[3];
+        public ParticleUtility spawnFX;
 
         private void Awake()
         {
@@ -36,8 +39,13 @@ namespace TetrisClone.Core
             Shape shape = null;
             //shape = Instantiate(GetRandomShape(), transform.position, Quaternion.identity) as Shape;
             shape = GetQueuedShape();
-            shape.transform.position = this.transform.position;
+            StartCoroutine(GrowShapeRoutine(shape, transform.position, 0.25f));
             shape.transform.localScale = Vector3.one;
+
+            if (spawnFX)
+            {
+                spawnFX.PlayParticles();
+            }
             
             if (shape)
             {
@@ -93,6 +101,23 @@ namespace TetrisClone.Core
             FillQueue();
 
             return firstShape;
+        }
+
+        private IEnumerator GrowShapeRoutine(Shape shape, Vector3 position, float growTime = 0.5f)
+        {
+            var startSize = 0f;
+            growTime = Mathf.Clamp(growTime, 0.1f, 2f);
+            var sizeDelta = Time.deltaTime / growTime;
+
+            while (startSize < 1f)
+            {
+                shape.transform.localScale = new Vector3(startSize, startSize, startSize);
+                startSize += sizeDelta;
+                shape.transform.position = position;
+                yield return null;
+            }
+            
+            shape.transform.localScale = Vector3.one;
         }
     }
 }

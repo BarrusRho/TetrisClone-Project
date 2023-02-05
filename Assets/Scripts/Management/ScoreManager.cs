@@ -1,3 +1,4 @@
+using TetrisClone.Utility;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,7 +10,7 @@ namespace TetrisClone.Management
     {
         private int _score = 0;
         private int _lines;
-        [FormerlySerializedAs("_level")] public int level = 1;
+        public int level = 1;
 
         private const int _minLines = 1;
         private const int _maxLines = 4;
@@ -20,6 +21,8 @@ namespace TetrisClone.Management
         public TMP_Text linesText;
         public TMP_Text levelText;
         public TMP_Text scoreText;
+
+        public ParticleUtility levelUpFX;
 
         private void Start()
         {
@@ -100,6 +103,11 @@ namespace TetrisClone.Management
             level++;
             _lines = linesPerLevel * level;
             hasLeveledUp = true;
+
+            if (levelUpFX)
+            {
+                levelUpFX.PlayParticles();
+            }
         }
     }
 }
