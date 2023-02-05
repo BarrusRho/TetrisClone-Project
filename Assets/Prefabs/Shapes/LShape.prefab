@@ -386,3 +386,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canRotate: 1
   queueOffset: {x: -0.25, y: 0, z: 0}
+  glowingSquareTag: LandShapeFX

@@ -184,8 +184,14 @@ namespace TetrisClone.Management
 
         private void LandShape()
         {
+            if (!_activeShape)
+            {
+                return;
+            }
+            
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
+            _activeShape.LandShapeFX();
             PlaySound(_audioManager.dropSound, 1f);
 
             if (_ghostShapeManager)
@@ -197,7 +203,7 @@ namespace TetrisClone.Management
             {
                 _shapeHolder.canReleaseShape = true;
             }
-            
+
             _activeShape = _spawner.SpawnShape();
 
             _timeToNextKeyLeftRight = Time.time;
@@ -213,7 +219,8 @@ namespace TetrisClone.Management
                 if (_scoreManager.hasLeveledUp)
                 {
                     PlaySound(_audioManager.levelUpVocalClip, 1f);
-                    _dropIntervalModded = Mathf.Clamp(dropInterval - (((float)_scoreManager.level -1) * 0.1f), 0.05f, 1f);
+                    _dropIntervalModded = Mathf.Clamp(dropInterval - (((float)_scoreManager.level - 1) * 0.1f),
+                        0.05f, 1f);
                 }
                 else
                 {
@@ -225,6 +232,7 @@ namespace TetrisClone.Management
                 }
 
                 PlaySound(_audioManager.clearRowSound, 1f);
+                
             }
         }
 

@@ -134,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canRotate: 1
   queueOffset: {x: 0, y: 0.25, z: 0}
+  glowingSquareTag: LandShapeFX
 --- !u!1 &5308842878548940580
 GameObject:
   m_ObjectHideFlags: 0
