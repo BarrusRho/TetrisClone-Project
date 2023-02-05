@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TetrisClone.Core;
 using TetrisClone.Utility;
 
@@ -263,7 +264,7 @@ namespace TetrisClone.Management
         {
             Debug.Log($"Level restarted");
             Time.timeScale = 1f;
-            Application.LoadLevel(Application.loadedLevel);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 
         public void ToggleRotationDirection()
