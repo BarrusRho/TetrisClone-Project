@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TetrisClone.Core;
 using TetrisClone.Utility;
 using TMPro;
+using UnityEngine.Serialization;
 
 namespace TetrisClone.Management
 {
@@ -27,7 +28,7 @@ namespace TetrisClone.Management
         [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
         private float _timeToNextDrag;
         private float _timeToNextSwipe;
-        [SerializeField] [Range(0.05f, 1f)] private float _minimumTimeToDrag = 0.15f;
+        [Range(0.05f, 1f)] public float minimumTimeToDrag = 0.15f;
         [SerializeField] [Range(0.05f, 1f)] private float _minimumTimeToSwipe = 0.3f;
         private bool _hasTapped = false;
 
@@ -170,14 +171,14 @@ namespace TetrisClone.Management
                      (_dragDirection == Direction.right && Time.time > _timeToNextDrag))
             {
                 MoveRight();
-                _timeToNextDrag = Time.time + _minimumTimeToDrag;
+                _timeToNextDrag = Time.time + minimumTimeToDrag;
                 _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
             }
             else if ((_swipeDirection == Direction.left && Time.time > _timeToNextSwipe) ||
                      (_dragDirection == Direction.left && Time.time > _timeToNextDrag))
             {
                 MoveLeft();
-                _timeToNextDrag = Time.time + _minimumTimeToDrag;
+                _timeToNextDrag = Time.time + minimumTimeToDrag;
                 _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
             }
             else if ((_swipeDirection == Direction.up && Time.time > _timeToNextSwipe) || (_hasTapped))
@@ -189,7 +190,7 @@ namespace TetrisClone.Management
             else if (_dragDirection == Direction.down && Time.time > _timeToNextDrag)
             {
                 MoveDown();
-                _timeToNextDrag = Time.time + _minimumTimeToDrag;
+                //_timeToNextDrag = Time.time + _minimumTimeToDrag;
             }
 
             #endregion
@@ -333,7 +334,7 @@ namespace TetrisClone.Management
             }
         }
 
-        private void PlaySound(AudioClip audioClip, float volumeMultiplier)
+        private void PlaySound(AudioClip audioClip, float volumeMultiplier = 1.0f)
         {
             if (_audioManager.isSFXEnabled && audioClip)
             {

@@ -21,7 +21,7 @@ namespace TetrisClone.Management
 
         private Vector2 _touchMovement;
         [Range(50, 150)] public int minimumDragDistance = 100;
-        [Range(50, 250)] public int minimumSwipeDistance = 200;
+        [Range(20, 250)] public int minimumSwipeDistance = 50;
         private float _tapTimeMaximum = 0f;
         public float tapTimeWindow = 0.1f;
 
