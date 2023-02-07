@@ -1379,6 +1379,8 @@ MonoBehaviour:
   _keyRepeatRateLeftRight: 0.3
   _keyRepeateRateRotate: 0.03
   _keyRepeatRateDown: 0.05
+  _minimumTimeToDrag: 0.15
+  _minimumTimeToSwipe: 0.3
   dropInterval: 0.9
   isPaused: 0
   gameOverPanel: {fileID: 751390686}
@@ -6860,6 +6862,9 @@ MonoBehaviour:
   diagnosticText1: {fileID: 1013913793}
   diagnosticText2: {fileID: 243981711}
   canUseDiagnostic: 1
+  minimumDragDistance: 100
+  minimumSwipeDistance: 200
+  tapTimeWindow: 0.2
 --- !u!1 &1652621355
 GameObject:
   m_ObjectHideFlags: 0
@@ -7532,7 +7537,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1768095811
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7899,7 +7904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1795125678
 RectTransform:
   m_ObjectHideFlags: 0

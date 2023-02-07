@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,10 +25,23 @@ namespace TetrisClone.Management
         [SerializeField] [Range(0.02f, 1f)] private float _keyRepeateRateRotate = 0.25f;
         private float _timeToNextKeyDown;
         [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
-        
-        private enum Direction { none, left, right, up, down }
+        private float _timeToNextDrag;
+        private float _timeToNextSwipe;
+        [SerializeField] [Range(0.05f, 1f)] private float _minimumTimeToDrag = 0.15f;
+        [SerializeField] [Range(0.05f, 1f)] private float _minimumTimeToSwipe = 0.3f;
+        private bool _hasTapped = false;
+
+        private enum Direction
+        {
+            none,
+            left,
+            right,
+            up,
+            down
+        }
+
+        private Direction _dragDirection = Direction.none;
         private Direction _swipeDirection = Direction.none;
-        private Direction _swipeEndDirection = Direction.none;
 
         public float dropInterval = 0.9f;
         private float _dropIntervalModded;
@@ -42,7 +54,7 @@ namespace TetrisClone.Management
 
         public ParticleUtility gameOverFX;
         public TMP_Text diagnosticText;
-        
+
         private void Awake()
         {
             _audioManager = FindObjectOfType<AudioManager>();
@@ -61,8 +73,9 @@ namespace TetrisClone.Management
 
         private void OnEnable()
         {
+            TouchManager.DragEvent += DragHandler;
             TouchManager.SwipeEvent += SwipeHandler;
-            TouchManager.SwipeEndEvent += SwipeEndHandler;
+            TouchManager.TapEvent += TapHandler;
         }
 
         private void Start()
@@ -84,6 +97,7 @@ namespace TetrisClone.Management
             {
                 gameOverPanel.SetActive(false);
             }
+
             if (pauseMenuPanel)
             {
                 pauseMenuPanel.SetActive(false);
@@ -117,12 +131,15 @@ namespace TetrisClone.Management
 
         private void OnDisable()
         {
+            TouchManager.DragEvent -= DragHandler;
             TouchManager.SwipeEvent -= SwipeHandler;
-            TouchManager.SwipeEndEvent -= SwipeEndHandler;
+            TouchManager.TapEvent -= TapHandler;
         }
 
         private void PlayerInput()
         {
+            #region KeyboardControls
+
             if ((Input.GetButton("MoveRight") && (Time.time > _timeToNextKeyLeftRight)) ||
                 Input.GetButtonDown("MoveRight") ||
                 Input.GetKeyDown(KeyCode.RightArrow))
@@ -144,30 +161,39 @@ namespace TetrisClone.Management
             {
                 MoveDown();
             }
-            
-            else if ((_swipeDirection == Direction.right && Time.time > _timeToNextKeyLeftRight) || _swipeEndDirection == Direction.right)
+
+            #endregion
+
+            #region TouchControls
+
+            else if ((_swipeDirection == Direction.right && Time.time > _timeToNextSwipe) ||
+                     (_dragDirection == Direction.right && Time.time > _timeToNextDrag))
             {
                 MoveRight();
-                _swipeDirection = Direction.none;
-                _swipeEndDirection = Direction.none;
+                _timeToNextDrag = Time.time + _minimumTimeToDrag;
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
             }
-            else if ((_swipeDirection == Direction.left && Time.time > _timeToNextKeyLeftRight) || _swipeEndDirection == Direction.left)
+            else if ((_swipeDirection == Direction.left && Time.time > _timeToNextSwipe) ||
+                     (_dragDirection == Direction.left && Time.time > _timeToNextDrag))
             {
                 MoveLeft();
-                _swipeDirection = Direction.none;
-                _swipeEndDirection = Direction.none;
+                _timeToNextDrag = Time.time + _minimumTimeToDrag;
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
             }
-            else if (_swipeEndDirection == Direction.up)
+            else if ((_swipeDirection == Direction.up && Time.time > _timeToNextSwipe) || (_hasTapped))
             {
                 Rotate();
-                _swipeEndDirection = Direction.none;
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
+                _hasTapped = false;
             }
-            else if (_swipeDirection == Direction.down && Time.time > _timeToNextKeyDown)
+            else if (_dragDirection == Direction.down && Time.time > _timeToNextDrag)
             {
                 MoveDown();
-                _swipeDirection = Direction.none;
+                _timeToNextDrag = Time.time + _minimumTimeToDrag;
             }
-            
+
+            #endregion
+
             else if (Input.GetButtonDown("ToggleRotation"))
             {
                 ToggleRotationDirection();
@@ -180,6 +206,10 @@ namespace TetrisClone.Management
             {
                 HoldShape();
             }
+
+            _dragDirection = Direction.none;
+            _swipeDirection = Direction.none;
+            _hasTapped = false;
         }
 
         private void MoveDown()
@@ -249,14 +279,14 @@ namespace TetrisClone.Management
                 PlaySound(_audioManager.moveSound, 1f);
             }
         }
-        
+
         private void LandShape()
         {
             if (!_activeShape)
             {
                 return;
             }
-            
+
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
             _activeShape.LandShapeFX();
@@ -300,7 +330,6 @@ namespace TetrisClone.Management
                 }
 
                 PlaySound(_audioManager.clearRowSound, 1f);
-                
             }
         }
 
@@ -405,34 +434,46 @@ namespace TetrisClone.Management
             }
 
             yield return new WaitForSeconds(0.3f);
-            
+
             if (gameOverPanel)
             {
                 gameOverPanel.SetActive(true);
             }
         }
 
-        private void SwipeHandler(Vector2 swipeMovement)
+        private void DragHandler(Vector2 dragMovement)
         {
             if (diagnosticText)
             {
                 diagnosticText.text = $"SwipeEvent detected";
             }
 
-            _swipeDirection = GetSwipeDirection(swipeMovement);
+            _dragDirection = GetTouchDirection(dragMovement);
         }
 
-        private void SwipeEndHandler(Vector2 swipeMovement)
+        private void SwipeHandler(Vector2 swipeMovement)
         {
             if (diagnosticText)
             {
                 diagnosticText.text = "";
             }
 
-            _swipeEndDirection = GetSwipeDirection(swipeMovement);
+            _swipeDirection = GetTouchDirection(swipeMovement);
         }
 
-        private Direction GetSwipeDirection(Vector2 swipeMovement)
+        private void TapHandler(Vector2 tapMovement)
+        {
+            if (diagnosticText)
+            {
+                diagnosticText.text = "";
+            }
+
+            _hasTapped = true;
+
+            //_swipeDirection = GetTouchDirection(tapMovement);
+        }
+
+        private Direction GetTouchDirection(Vector2 swipeMovement)
         {
             var swipeDirection = Direction.none;
 
