@@ -40,6 +40,15 @@ namespace TetrisClone.Management
             PlayBackgroundMusic(_randomBackgroundMusicAudioClip);
         }
         
+        public void PlaySound(AudioClip audioClip, float volumeMultiplier = 1.0f)
+        {
+            if (isSFXEnabled && audioClip)
+            {
+                AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position,
+                    Mathf.Clamp(sFXVolume * volumeMultiplier, 0.05f, 1f));
+            }
+        }
+        
         public void PlayBackgroundMusic(AudioClip audioClip)
         {
             if (!isMusicEnabled || !audioClip || !audioSource)

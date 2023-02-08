@@ -241,11 +241,11 @@ namespace TetrisClone.Management
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
                 _activeShape.RotateClockwise(!_clockwiseRotation);
-                PlaySound(_audioManager.errorSound, 0.5f);
+                _audioManager.PlaySound(_audioManager.errorSound, 0.5f);
             }
             else
             {
-                PlaySound(_audioManager.moveSound, 1f);
+                _audioManager.PlaySound(_audioManager.moveSound, 1f);
             }
         }
 
@@ -257,11 +257,11 @@ namespace TetrisClone.Management
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
                 _activeShape.MoveRight();
-                PlaySound(_audioManager.errorSound, 0.5f);
+                _audioManager.PlaySound(_audioManager.errorSound, 0.5f);
             }
             else
             {
-                PlaySound(_audioManager.moveSound, 1f);
+                _audioManager.PlaySound(_audioManager.moveSound, 1f);
             }
         }
 
@@ -273,11 +273,11 @@ namespace TetrisClone.Management
             if (!_gameBoard.IsValidPosition(_activeShape))
             {
                 _activeShape.MoveLeft();
-                PlaySound(_audioManager.errorSound, 0.5f);
+                _audioManager.PlaySound(_audioManager.errorSound, 0.5f);
             }
             else
             {
-                PlaySound(_audioManager.moveSound, 1f);
+                _audioManager.PlaySound(_audioManager.moveSound, 1f);
             }
         }
 
@@ -291,7 +291,7 @@ namespace TetrisClone.Management
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
             _activeShape.LandShapeFX();
-            PlaySound(_audioManager.dropSound, 1f);
+            _audioManager.PlaySound(_audioManager.dropSound, 1f);
 
             if (_ghostShapeManager)
             {
@@ -317,7 +317,7 @@ namespace TetrisClone.Management
 
                 if (_scoreManager.hasLeveledUp)
                 {
-                    PlaySound(_audioManager.levelUpVocalClip, 1f);
+                    _audioManager.PlaySound(_audioManager.levelUpVocalClip, 1f);
                     _dropIntervalModded = Mathf.Clamp(dropInterval - (((float)_scoreManager.level - 1) * 0.1f),
                         0.05f, 1f);
                 }
@@ -326,31 +326,22 @@ namespace TetrisClone.Management
                     if (_gameBoard.completedRows > 1)
                     {
                         var randomVocalAudioClip = _audioManager.GetRandomAudioClip(_audioManager.vocalAudioClips);
-                        PlaySound(randomVocalAudioClip, 1f);
+                        _audioManager.PlaySound(randomVocalAudioClip, 1f);
                     }
                 }
 
-                PlaySound(_audioManager.clearRowSound, 1f);
+                _audioManager.PlaySound(_audioManager.clearRowSound, 1f);
             }
         }
-
-        private void PlaySound(AudioClip audioClip, float volumeMultiplier = 1.0f)
-        {
-            if (_audioManager.isSFXEnabled && audioClip)
-            {
-                AudioSource.PlayClipAtPoint(audioClip, Camera.main.transform.position,
-                    Mathf.Clamp(_audioManager.sFXVolume * volumeMultiplier, 0.05f, 1f));
-            }
-        }
-
+        
         private void GameOver()
         {
             _activeShape.MoveUp();
 
             StartCoroutine(GameOverRoutine());
 
-            PlaySound(_audioManager.gameOverSound, 2f);
-            PlaySound(_audioManager.gameOverVocal, 2f);
+            _audioManager.PlaySound(_audioManager.gameOverSound, 2f);
+            _audioManager.PlaySound(_audioManager.gameOverVocal, 2f);
 
             _isGameOver = true;
         }
@@ -405,7 +396,7 @@ namespace TetrisClone.Management
             {
                 _shapeHolder.CatchActiveShape(_activeShape);
                 _activeShape = _spawner.SpawnShape();
-                PlaySound(_audioManager.holdSound, 1f);
+                _audioManager.PlaySound(_audioManager.holdSound, 1f);
             }
             else if (_shapeHolder.canReleaseShape)
             {
@@ -413,12 +404,12 @@ namespace TetrisClone.Management
                 _activeShape = _shapeHolder.ReleaseShape();
                 _activeShape.transform.position = _spawner.transform.position;
                 _shapeHolder.CatchActiveShape(temporaryShape);
-                PlaySound(_audioManager.holdSound, 1f);
+                _audioManager.PlaySound(_audioManager.holdSound, 1f);
             }
             else
             {
                 Debug.LogWarning("ShapeHolder Warning: Wait for cooldown");
-                PlaySound(_audioManager.errorSound, 1f);
+                _audioManager.PlaySound(_audioManager.errorSound, 1f);
             }
 
             if (_ghostShapeManager)
