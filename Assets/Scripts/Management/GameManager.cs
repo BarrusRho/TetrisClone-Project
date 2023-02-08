@@ -1,9 +1,10 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TetrisClone.Core;
 using TetrisClone.Utility;
+using TMPro;
+using UnityEngine.Serialization;
 
 namespace TetrisClone.Management
 {
@@ -25,6 +26,23 @@ namespace TetrisClone.Management
         [SerializeField] [Range(0.02f, 1f)] private float _keyRepeateRateRotate = 0.25f;
         private float _timeToNextKeyDown;
         [SerializeField] [Range(0.01f, 1f)] private float _keyRepeatRateDown = 0.01f;
+        private float _timeToNextDrag;
+        private float _timeToNextSwipe;
+        [Range(0.05f, 1f)] public float minimumTimeToDrag = 0.15f;
+        [SerializeField] [Range(0.05f, 1f)] private float _minimumTimeToSwipe = 0.3f;
+        private bool _hasTapped = false;
+
+        private enum Direction
+        {
+            none,
+            left,
+            right,
+            up,
+            down
+        }
+
+        private Direction _dragDirection = Direction.none;
+        private Direction _swipeDirection = Direction.none;
 
         public float dropInterval = 0.9f;
         private float _dropIntervalModded;
@@ -36,7 +54,8 @@ namespace TetrisClone.Management
         public GameObject pauseMenuPanel;
 
         public ParticleUtility gameOverFX;
-        
+        public TMP_Text diagnosticText;
+
         private void Awake()
         {
             _audioManager = FindObjectOfType<AudioManager>();
@@ -51,6 +70,13 @@ namespace TetrisClone.Management
             {
                 Debug.Log($"WARNING. There is a missing assignment");
             }
+        }
+
+        private void OnEnable()
+        {
+            TouchManager.DragEvent += DragHandler;
+            TouchManager.SwipeEvent += SwipeHandler;
+            TouchManager.TapEvent += TapHandler;
         }
 
         private void Start()
@@ -72,9 +98,15 @@ namespace TetrisClone.Management
             {
                 gameOverPanel.SetActive(false);
             }
+
             if (pauseMenuPanel)
             {
                 pauseMenuPanel.SetActive(false);
+            }
+
+            if (diagnosticText)
+            {
+                diagnosticText.text = "";
             }
 
             _dropIntervalModded = dropInterval;
@@ -98,78 +130,71 @@ namespace TetrisClone.Management
             }
         }
 
+        private void OnDisable()
+        {
+            TouchManager.DragEvent -= DragHandler;
+            TouchManager.SwipeEvent -= SwipeHandler;
+            TouchManager.TapEvent -= TapHandler;
+        }
+
         private void PlayerInput()
         {
+            #region KeyboardControls
+
             if ((Input.GetButton("MoveRight") && (Time.time > _timeToNextKeyLeftRight)) ||
                 Input.GetButtonDown("MoveRight") ||
                 Input.GetKeyDown(KeyCode.RightArrow))
             {
-                _activeShape.MoveRight();
-                _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
-
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.MoveLeft();
-                    PlaySound(_audioManager.errorSound, 0.5f);
-                }
-                else
-                {
-                    PlaySound(_audioManager.moveSound, 1f);
-                }
+                MoveRight();
             }
             else if ((Input.GetButton("MoveLeft") && (Time.time > _timeToNextKeyLeftRight)) ||
                      Input.GetButtonDown("MoveLeft") ||
                      Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                _activeShape.MoveLeft();
-                _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
-
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.MoveRight();
-                    PlaySound(_audioManager.errorSound, 0.5f);
-                }
-                else
-                {
-                    PlaySound(_audioManager.moveSound, 1f);
-                }
+                MoveLeft();
             }
             else if (Input.GetButtonDown("Rotate") && Time.time > _timeToNextKeyRotate ||
                      Input.GetKeyDown(KeyCode.UpArrow))
             {
-                //_activeShape.RotateRight();
-                _activeShape.RotateClockwise(_clockwiseRotation);
-                _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
-
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    _activeShape.RotateClockwise(!_clockwiseRotation);
-                    PlaySound(_audioManager.errorSound, 0.5f);
-                }
-                else
-                {
-                    PlaySound(_audioManager.moveSound, 1f);
-                }
+                Rotate();
             }
             else if ((Input.GetButton("MoveDown") && (Time.time > _timeToNextKeyDown)) || (Time.time > _timeToDrop))
             {
-                _timeToDrop = Time.time + _dropIntervalModded;
-                _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
-
-                _activeShape.MoveDown();
-
-                if (!_gameBoard.IsValidPosition(_activeShape))
-                {
-                    if (_gameBoard.IsOverLimit(_activeShape))
-                    {
-                        GameOver();
-                    }
-                    else
-                    {
-                        LandShape();
-                    }
-                }
+                MoveDown();
             }
+
+            #endregion
+
+            #region TouchControls
+
+            else if ((_swipeDirection == Direction.right && Time.time > _timeToNextSwipe) ||
+                     (_dragDirection == Direction.right && Time.time > _timeToNextDrag))
+            {
+                MoveRight();
+                _timeToNextDrag = Time.time + minimumTimeToDrag;
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
+            }
+            else if ((_swipeDirection == Direction.left && Time.time > _timeToNextSwipe) ||
+                     (_dragDirection == Direction.left && Time.time > _timeToNextDrag))
+            {
+                MoveLeft();
+                _timeToNextDrag = Time.time + minimumTimeToDrag;
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
+            }
+            else if ((_swipeDirection == Direction.up && Time.time > _timeToNextSwipe) || (_hasTapped))
+            {
+                Rotate();
+                _timeToNextSwipe = Time.time + _minimumTimeToSwipe;
+                _hasTapped = false;
+            }
+            else if (_dragDirection == Direction.down && Time.time > _timeToNextDrag)
+            {
+                MoveDown();
+                //_timeToNextDrag = Time.time + _minimumTimeToDrag;
+            }
+
+            #endregion
+
             else if (Input.GetButtonDown("ToggleRotation"))
             {
                 ToggleRotationDirection();
@@ -182,8 +207,79 @@ namespace TetrisClone.Management
             {
                 HoldShape();
             }
+
+            _dragDirection = Direction.none;
+            _swipeDirection = Direction.none;
+            _hasTapped = false;
         }
 
+        private void MoveDown()
+        {
+            _timeToDrop = Time.time + _dropIntervalModded;
+            _timeToNextKeyDown = Time.time + _keyRepeatRateDown;
+
+            _activeShape.MoveDown();
+
+            if (!_gameBoard.IsValidPosition(_activeShape))
+            {
+                if (_gameBoard.IsOverLimit(_activeShape))
+                {
+                    GameOver();
+                }
+                else
+                {
+                    LandShape();
+                }
+            }
+        }
+
+        private void Rotate()
+        {
+            _activeShape.RotateClockwise(_clockwiseRotation);
+            _timeToNextKeyRotate = Time.time + _keyRepeateRateRotate;
+
+            if (!_gameBoard.IsValidPosition(_activeShape))
+            {
+                _activeShape.RotateClockwise(!_clockwiseRotation);
+                PlaySound(_audioManager.errorSound, 0.5f);
+            }
+            else
+            {
+                PlaySound(_audioManager.moveSound, 1f);
+            }
+        }
+
+        private void MoveLeft()
+        {
+            _activeShape.MoveLeft();
+            _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
+
+            if (!_gameBoard.IsValidPosition(_activeShape))
+            {
+                _activeShape.MoveRight();
+                PlaySound(_audioManager.errorSound, 0.5f);
+            }
+            else
+            {
+                PlaySound(_audioManager.moveSound, 1f);
+            }
+        }
+
+        private void MoveRight()
+        {
+            _activeShape.MoveRight();
+            _timeToNextKeyLeftRight = Time.time + _keyRepeatRateLeftRight;
+
+            if (!_gameBoard.IsValidPosition(_activeShape))
+            {
+                _activeShape.MoveLeft();
+                PlaySound(_audioManager.errorSound, 0.5f);
+            }
+            else
+            {
+                PlaySound(_audioManager.moveSound, 1f);
+            }
+        }
 
         private void LandShape()
         {
@@ -191,7 +287,7 @@ namespace TetrisClone.Management
             {
                 return;
             }
-            
+
             _activeShape.MoveUp();
             _gameBoard.StoreShapeInGrid(_activeShape);
             _activeShape.LandShapeFX();
@@ -235,11 +331,10 @@ namespace TetrisClone.Management
                 }
 
                 PlaySound(_audioManager.clearRowSound, 1f);
-                
             }
         }
 
-        private void PlaySound(AudioClip audioClip, float volumeMultiplier)
+        private void PlaySound(AudioClip audioClip, float volumeMultiplier = 1.0f)
         {
             if (_audioManager.isSFXEnabled && audioClip)
             {
@@ -340,11 +435,59 @@ namespace TetrisClone.Management
             }
 
             yield return new WaitForSeconds(0.3f);
-            
+
             if (gameOverPanel)
             {
                 gameOverPanel.SetActive(true);
             }
+        }
+
+        private void DragHandler(Vector2 dragMovement)
+        {
+            if (diagnosticText)
+            {
+                diagnosticText.text = $"SwipeEvent detected";
+            }
+
+            _dragDirection = GetTouchDirection(dragMovement);
+        }
+
+        private void SwipeHandler(Vector2 swipeMovement)
+        {
+            if (diagnosticText)
+            {
+                diagnosticText.text = "";
+            }
+
+            _swipeDirection = GetTouchDirection(swipeMovement);
+        }
+
+        private void TapHandler(Vector2 tapMovement)
+        {
+            if (diagnosticText)
+            {
+                diagnosticText.text = "";
+            }
+
+            _hasTapped = true;
+
+            //_swipeDirection = GetTouchDirection(tapMovement);
+        }
+
+        private Direction GetTouchDirection(Vector2 swipeMovement)
+        {
+            var swipeDirection = Direction.none;
+
+            if (Mathf.Abs(swipeMovement.x) > Mathf.Abs(swipeMovement.y))
+            {
+                swipeDirection = (swipeMovement.x >= 0) ? Direction.right : Direction.left;
+            }
+            else
+            {
+                swipeDirection = (swipeMovement.y >= 0) ? Direction.up : Direction.down;
+            }
+
+            return swipeDirection;
         }
     }
 }
